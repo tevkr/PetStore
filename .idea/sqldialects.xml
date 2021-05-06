@@ -10,5 +10,6 @@
     <file url="file://$PROJECT_DIR$/src/main/resources/databases/create_products_part_4.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/databases/create_products_part_5.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/databases/init.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/databases/updatePrimaryKeys.sql" dialect="PostgreSQL" />
   </component>
 </project>
