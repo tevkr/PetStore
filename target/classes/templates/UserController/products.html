@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Товары</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/bootstrap.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">PetStore</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="/">Главная</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Товары
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown1">
+            <li th:each="pet:${#lists.sort(pets, sortPetsById)}">
+              <a class="dropdown-item" th:href="@{/products(pId=${pet.getId()}, pTId=0, pTDId=0)}" th:text="${pet.getName()}">Text</a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Корзина</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Зарегистрироваться</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Другое
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
+            <li><a class="dropdown-item" href="/admin">Админ панель</a></li>
+            <li><a class="dropdown-item" href="/about">О проекте</a></li>
+          </ul>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
+        <button class="btn btn-outline-success" type="submit">Поиск</button>
+      </form>
+    </div>
+  </div>
+</nav>
+<div class="product-page-content">
+  <div class="products-menu">
+    <nav class="nav flex-column product-types" th:each="productType : ${#lists.sort(productTypes, sortProductTypesById)}">
+      <a th:attr="class=${pTId == productType.getId() ? 'nav-link color-active' : 'nav-link color-default'}" th:href="@{/products(pId=${pId}, pTId=${productType.getId()}, pTDId=0)}" th:text="${productType.getName()}">TEXT</a>
+      <nav th:if="${pTId == productType.getId()}" th:each="productTypeDetailed : ${#lists.sort(productTypesDetailed, sortProductTypesDetailedById)}" class="nav flex-column product-types-detailed">
+        <a th:attr="class=${pTDId == productTypeDetailed.getId() ? 'nav-link color-active' : 'nav-link color-default'}" th:href="@{/products(pId=${pId}, pTId=${productType.getId()}, pTDId=${productTypeDetailed.getId()})}" th:text="${productTypeDetailed.getName()}">TEXT</a>
+      </nav>
+    </nav>
+  </div>
+  <div class="products container items-parent">
+    <div class="item-ch col-xl-3 col-lg-4 item-md-6 item-sm-6 item-xs-12" th:each="product : ${#lists.sort(products, sortProductsById)}">
+      <div class="card" style="width: 18rem;">
+        <img th:src="${'media/img/products/'+product.getId()+'.png'}" class="card-img-top" alt="product-img">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${product.getName()}">Card title</h5>
+          <p class="card-text" th:text="${product.getPrice() + ' р.'}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <a th:href="${'/product?productId='+product.getId()}" class="btn btn-primary">Перейти</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Питомцы</title>
+    <link rel="stylesheet" href="../../css/bootstrap.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script src="../../js/bootstrap.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/admin">Админ панель PetStore</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/admin/pets">Питомцы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/admin/product-types">Категории</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/admin/product-types-detailed">Подкатегории</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/admin/products">Товары</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/">Вернуться на сайт</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="content padding-site">
+    <h3>Изменить питомца</h3>
+    <form th:method="POST" th:action="@{/admin/pets/change}">
+        <div class="mb-3">
+            <input type="hidden" Name="id" th:value="${pet.getId()}">
+            <label for="exampleFormControlInput1" class="form-label">Name</label>
+            <input type="text" class="form-control" id="exampleFormControlInput1" th:placeholder="${pet.getName()}" Name="name" th:value="${pet.getName()}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Изменить</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

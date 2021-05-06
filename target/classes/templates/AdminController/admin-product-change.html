@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Товары</title>
+    <link rel="stylesheet" href="../../css/bootstrap.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script src="../../js/bootstrap.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/admin">Админ панель PetStore</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/admin/pets">Питомцы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/admin/product-types">Категории</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/admin/product-types-detailed">Подкатегории</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/admin/products">Товары</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/">Вернуться на сайт</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="content padding-site">
+    <h3>Изменить товар</h3>
+    <form th:method="POST" th:action="@{/admin/products/change}" enctype="multipart/form-data">
+        <div class="mb-3">
+            <input type="hidden" Name="id" th:value="${product.getId()}">
+            <label for="select">Выберите питомца</label>
+            <select class="form-select" aria-label="Default select example" id="select" Name="petId" required>
+                <option th:each="pet: ${#lists.sort(pets, sortPetsById)}" th:value="${pet.getId()}" th:text="${pet.getName()}" th:selected="${product.getPetId() == pet.getId()}">TEXT</option>
+            </select>
+            <label for="productTypeSelect">Выберите категорию</label>
+            <select class="form-select" aria-label="Default select example" id="productTypeSelect" Name="productTypeId" required>
+            </select>
+            <label for="productTypeDetailedSelect">Выберите подкатегорию</label>
+            <select class="form-select" aria-label="Default select example" id="productTypeDetailedSelect" Name="productTypeDetailedId" required>
+            </select>
+            <label for="exampleFormControlInput1" class="form-label">Название товара</label>
+            <input required type="text" class="form-control" id="exampleFormControlInput1" th:placeholder="${product.getName()}" th:value="${product.getName()}" Name="name">
+            <label for="price" class="form-label">Цена (в рублях)</label>
+            <input required type="number" class="form-control" id="price" th:placeholder="${product.getPrice()}" th:value="${product.getPrice()}"  Name="price">
+            <label for="weight" class="form-label">Вес/Размер/Объем</label>
+            <input required type="text" class="form-control" id="weight" th:placeholder="${product.getWeight()}" th:value="${product.getWeight()}" Name="weight">
+            <label for="productDetails" class="form-label">Краткое описание товара</label>
+            <textarea class="form-control" id="productDetails" rows="3" Name="productDetails" th:placeholder="${product.getProductDetails()}" th:text="${product.getProductDetails()}"></textarea>
+            <label for="description" class="form-label">Описание товара</label>
+            <textarea class="form-control" id="description" rows="3" Name="description" th:placeholder="${product.getDescription()}" th:text="${product.getDescription()}"></textarea>
+            <label for="formFile" class="form-label">Загрузите картинку</label>
+            <input class="form-control" type="file" id="formFile" accept="image/x-png" Name="image">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Изменить</button>
+        </div>
+    </form>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var petSelect = document.getElementById("select");
+        var productTypeSelect = document.getElementById("productTypeSelect");
+        var productTypeDetailedSelect = document.getElementById("productTypeDetailedSelect");
+
+        window.addEventListener('load', (event) => {
+            fillProductTypeSelect();
+            fillProductTypeDetailedSelect();
+        });
+
+        petSelect.addEventListener("change", function() {
+            fillProductTypeSelect();
+        });
+        productTypeSelect.addEventListener("change", function() {
+            fillProductTypeDetailedSelect();
+        });
+        function fillProductTypeSelect() {
+            var petId = petSelect.options[petSelect.selectedIndex].value;
+            productTypeSelect.innerHTML = "";
+            var producttypes = [[${productTypeService}]];
+            producttypes = producttypes.allProductTypes;
+            producttypes.sort((a,b) => a.id - b.id);
+            for (var i = 0; i < producttypes.length; i++) {
+                if(producttypes[i].petId == petId) {
+                    let optionElement = document.createElement('option');
+                    optionElement.value = producttypes[i].id;
+                    optionElement.text = producttypes[i].name;
+                    if (producttypes[i].id == [[${product.getProductTypeId()}]])
+                        optionElement.selected = true;
+                    productTypeSelect.append(optionElement);
+                }
+            }
+            fillProductTypeDetailedSelect();
+        }
+        function fillProductTypeDetailedSelect() {
+            var productTypeId = productTypeSelect.options[productTypeSelect.selectedIndex].value;
+            productTypeDetailedSelect.innerHTML = "";
+            var productTypesDetailed = [[${productTypeDetailedService}]];
+            productTypesDetailed = productTypesDetailed.allProductTypesDetailed;
+            productTypesDetailed.sort((a,b) => a.id - b.id);
+            for (var i = 0; i < productTypesDetailed.length; i++) {
+                if(productTypesDetailed[i].productTypeId == productTypeId) {
+                    let optionElement = document.createElement('option');
+                    optionElement.value = productTypesDetailed[i].id;
+                    optionElement.text = productTypesDetailed[i].name;
+                    if (productTypesDetailed[i].id == [[${product.getProductTypeDetailedId()}]])
+                        optionElement.selected = true;
+                    productTypeDetailedSelect.append(optionElement);
+                }
+            }
+        }
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>

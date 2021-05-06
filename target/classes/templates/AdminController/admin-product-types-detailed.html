@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подкатегории</title>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/bootstrap.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/admin">Админ панель PetStore</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/admin/pets">Питомцы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/admin/product-types">Категории</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/admin/product-types-detailed">Подкатегории</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/admin/products">Товары</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/">Вернуться на сайт</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="content padding-site">
+    <h3>Создать новую подкатегорию</h3>
+    <form th:method="POST" th:action="@{/admin/product-types-detailed/create}">
+        <div class="mb-3">
+            <label for="select">Выберите питомца</label>
+            <select class="form-select" aria-label="Default select example" id="select" Name="petId" required>
+                <option th:each="pet: ${#lists.sort(pets, sortPetsById)}" th:value="${pet.getId()}" th:text="${pet.getName()}">TEXT</option>
+            </select>
+            <label for="productTypeSelect">Выберите категорию</label>
+            <select class="form-select" aria-label="Default select example" id="productTypeSelect" Name="productTypeId" required>
+            </select>
+            <label for="exampleFormControlInput1" class="form-label">Имя подкатегории</label>
+            <input required type="text" class="form-control" id="exampleFormControlInput1" placeholder="Повседневные" Name="name">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Создать</button>
+        </div>
+    </form>
+    <h3>БД</h3>
+    <label for="select1">Выберите питомца</label>
+    <select class="form-select" aria-label="Default select example" id="select1" required>
+        <option th:each="pet: ${#lists.sort(pets, sortPetsById)}" th:value="${pet.getId()}" th:text="${pet.getName()}" Name="petId">TEXT</option>
+    </select>
+    <label for="productTypeSelect">Выберите категорию</label>
+    <select class="form-select" aria-label="Default select example" id="productTypeSelect1" Name="productTypeId" required>
+    </select>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Изменить</th>
+            <th scope="col">Удалить</th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+        </tbody>
+    </table>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        var petSelect = document.getElementById("select");
+        var productTypeSelect = document.getElementById("productTypeSelect");
+
+        var bdPetSelect = document.getElementById("select1");
+        var bdproductTypeSelect = document.getElementById("productTypeSelect1");
+        var tbody = document.getElementById("tbody");
+        window.addEventListener('load', (event) => {
+            fillProductTypeSelect();
+            fillBDProductTypeSelect();
+            fillTable();
+        });
+        petSelect.addEventListener("change", function() {
+            fillProductTypeSelect();
+        });
+        bdPetSelect.addEventListener("change", function() {
+            fillBDProductTypeSelect();
+            fillTable();
+        });
+        bdproductTypeSelect.addEventListener("change", function() {
+            fillTable();
+        });
+        function fillBDProductTypeSelect() {
+            var petId = bdPetSelect.options[bdPetSelect.selectedIndex].value;
+            bdproductTypeSelect.innerHTML = "";
+            var producttypes = [[${productTypeService}]];
+            producttypes = producttypes.allProductTypes;
+            producttypes.sort((a,b) => a.id - b.id);
+            for (var i = 0; i < producttypes.length; i++) {
+                if(producttypes[i].petId == petId) {
+                    let optionElement = document.createElement('option');
+                    optionElement.value = producttypes[i].id;
+                    optionElement.text = producttypes[i].name;
+                    bdproductTypeSelect.append(optionElement);
+                }
+            }
+        }
+        function fillProductTypeSelect() {
+            var petId = petSelect.options[petSelect.selectedIndex].value;
+            productTypeSelect.innerHTML = "";
+            var producttypes = [[${productTypeService}]];
+            producttypes = producttypes.allProductTypes;
+            producttypes.sort((a,b) => a.id - b.id);
+            for (var i = 0; i < producttypes.length; i++) {
+                if(producttypes[i].petId == petId) {
+                    let optionElement = document.createElement('option');
+                    optionElement.value = producttypes[i].id;
+                    optionElement.text = producttypes[i].name;
+                    productTypeSelect.append(optionElement);
+                }
+            }
+        }
+        function fillTable() {
+            var petId;
+            var productTypeId;
+            try {
+                petId = bdPetSelect.options[bdPetSelect.selectedIndex].value;
+                productTypeId = bdproductTypeSelect.options[bdproductTypeSelect.selectedIndex].value;
+            }
+            catch (e) {
+                tbody.innerHTML = "";
+                return;
+            }
+            tbody.innerHTML = "";
+            var productTypesDetailed = [[${productTypeDetailedService}]];
+            productTypesDetailed = productTypesDetailed.allProductTypesDetailed;
+            productTypesDetailed.sort((a,b) => a.id - b.id);
+            for (var i = 0; i < productTypesDetailed.length; i++) {
+                if (productTypesDetailed[i].petId == petId && productTypesDetailed[i].productTypeId == productTypeId) {
+                    let trElement = document.createElement('tr'),
+                        thElement = document.createElement('th'),
+                        tdElement1 = document.createElement('td'),
+                        tdElement2 = document.createElement('td'),
+                        aElement = document.createElement('a'),
+                        tdElement3 = document.createElement('td'),
+                        formElement = document.createElement('form'),
+                        inputElement = document.createElement('input'),
+                        buttonElement1 = document.createElement('button'),
+                        buttonElement2 = document.createElement('button');
+
+                    thElement.scope = "row";
+                    thElement.innerText = productTypesDetailed[i].id;
+
+                    tdElement1.innerText = productTypesDetailed[i].name;
+                    aElement.href = "/admin/product-types-detailed/"+productTypesDetailed[i].id;
+
+                    buttonElement1.type = "button";
+                    buttonElement1.className = "btn btn-warning";
+                    buttonElement1.innerText = "Изменить";
+
+                    formElement.method = "POST";
+                    formElement.action = "/admin/product-types-detailed/delete";
+
+                    inputElement.type = "hidden";
+                    inputElement.name = "id";
+                    inputElement.value = productTypesDetailed[i].id;
+
+                    buttonElement2.type = "submit";
+                    buttonElement2.className = "btn btn-danger";
+                    buttonElement2.innerText = "Удалить";
+
+                    formElement.append(inputElement);
+                    formElement.append(buttonElement2);
+                    tdElement3.append(formElement);
+                    aElement.append(buttonElement1);
+                    tdElement2.append(aElement);
+                    trElement.append(thElement);
+                    trElement.append(tdElement1);
+                    trElement.append(tdElement2);
+                    trElement.append(tdElement3);
+                    tbody.append(trElement);
+                }
+            }
+        }
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>
