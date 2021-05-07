@@ -225,4 +225,27 @@ public class AdminController {
         productService.deleteProduct(id);
         return "redirect:/admin/products";
     }
+
+    @GetMapping("/users")
+    public String users(Model model) {
+        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("sortUsersById", Comparator.comparing(User::getId));
+        return "AdminController/admin-users";
+    }
+    @PostMapping(value = "/users/operation", params = "delete")
+    public String deleteUser(@RequestParam(value="userId") int userId, Model model) {
+        userService.deleteUserByID(userId);
+        return "redirect:/admin/users";
+    }
+    @PostMapping(value = "/users/operation", params = "change")
+    public String changeUsers(@RequestParam(value="userNames[]") String[] userNames,
+                              @RequestParam(value="userRoles[]") String[] userRoles,
+                              Model model) {
+        for (int i = 0; i < userNames.length; i++) {
+            User user = (User)userService.loadUserByUsername(userNames[i]);
+            user.setRole(userRoles[i]);
+            userService.addUser(user);
+        }
+        return "redirect:/admin/users";
+    }
 }

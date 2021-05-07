@@ -52,5 +52,7 @@ create table if not exists shopping_cart
     id serial primary key,
     user_id integer,
     product_id integer,
-    product_count integer
+    product_count integer,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
 );

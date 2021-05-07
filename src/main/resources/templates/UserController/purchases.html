@@ -63,6 +63,7 @@
     <h3 th:if="${purchases.isEmpty() == true}" >Корзина пуста</h3>
     <h3 th:if="${purchases.isEmpty() == false}">Корзина</h3>
     <form th:if="${purchases.isEmpty() == false}" th:method="POST" th:action="@{/changePurchases}">
+        <input id="purchaseIdForDelete" type="hidden" Name="purchaseId">
         <table class="table">
             <thead>
             <tr>
@@ -89,7 +90,6 @@
                     </div>
                 </td>
                 <td>
-                    <input type="hidden" Name="purchaseId" th:value="${purchase.getId()}" >
                     <button type="submit" name="delete" class="btn btn-danger">Удалить</button>
                 </td>
             </tr>
@@ -141,6 +141,9 @@
         if (countEl.value > 1) {
             countEl.value--;
         }
+    }
+    function changePurchaseId(id) {
+        document.getElementById('purchaseIdForDelete').value = id;
     }
 </script>
 </body>
