@@ -20,7 +20,7 @@
           <a class="nav-link" aria-current="page" href="/">Главная</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Товары
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown1">
@@ -30,17 +30,23 @@
           </ul>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Корзина</a>
+          <a class="nav-link" href="/purchases">Корзина</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Зарегистрироваться</a>
+        <li class="nav-item" th:if="${userRole} == 'GUEST'">
+          <a class="nav-link" href="/login">Войти</a>
+        </li>
+        <li class="nav-item" th:if="${userRole} == 'GUEST'">
+          <a class="nav-link" href="/sign">Зарегистрироваться</a>
+        </li>
+        <li class="nav-item" th:if="${userRole} == 'ADMIN' or ${userRole} == 'USER'">
+          <a class="nav-link" href="/logout">Выйти</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Другое
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
-            <li><a class="dropdown-item" href="/admin">Админ панель</a></li>
+            <li th:if="${userRole} == 'ADMIN'"><a class="dropdown-item" href="/admin">Админ панель</a></li>
             <li><a class="dropdown-item" href="/about">О проекте</a></li>
           </ul>
         </li>
@@ -64,7 +70,7 @@
   <div class="products container items-parent">
     <div class="item-ch col-xl-3 col-lg-4 item-md-6 item-sm-6 item-xs-12" th:each="product : ${#lists.sort(products, sortProductsById)}">
       <div class="card" style="width: 18rem;">
-        <img th:src="${'media/img/products/'+product.getId()+'.png'}" class="card-img-top" alt="product-img">
+        <img th:src="@{${'img/products/' + product.getId() + '.png'}}" alt="product-img">
         <div class="card-body">
           <h5 class="card-title" th:text="${product.getName()}">Card title</h5>
           <p class="card-text" th:text="${product.getPrice() + ' р.'}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Корзина</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/bootstrap.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">PetStore</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/">Главная</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Товары
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                        <li th:each="pet:${#lists.sort(pets, sortPetsById)}">
+                            <a class="dropdown-item" th:href="@{/products(pId=${pet.getId()}, pTId=0, pTDId=0)}" th:text="${pet.getName()}">Text</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/purchases">Корзина</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'GUEST'">
+                    <a class="nav-link" href="/login">Войти</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'GUEST'">
+                    <a class="nav-link" href="/sign">Зарегистрироваться</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'ADMIN' or ${userRole} == 'USER'">
+                    <a class="nav-link" href="/logout">Выйти</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Другое
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                        <li th:if="${userRole} == 'ADMIN'"><a class="dropdown-item" href="/admin">Админ панель</a></li>
+                        <li><a class="dropdown-item" href="/about">О проекте</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
+                <button class="btn btn-outline-success" type="submit">Поиск</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<div class="content padding-site">
+    <h3 th:text="'Здравствуйте, ' + ${userName}">TEXT</h3>
+    <h3 th:if="${purchases.isEmpty() == true}" >Корзина пуста</h3>
+    <h3 th:if="${purchases.isEmpty() == false}">Корзина</h3>
+    <form th:if="${purchases.isEmpty() == false}" th:method="POST" th:action="@{/changePurchases}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Название товара</th>
+                <th scope="col">Цена за шт.</th>
+                <th scope="col">Цена</th>
+                <th scope="col">Количество</th>
+                <th scope="col">Удалить</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="purchase, index: ${#lists.sort(purchases, sortPurchasesById)}">
+                <input type="hidden" Name="purchaseIds[]" th:value="${purchase.getId()}">
+                <th scope="row" th:text="${index.count}">INDEX</th>
+                <td th:text="${productsService.getProductById(purchase.getProductId()).getName()}" style="width: 1000px;">PRODUCT NAME</td>
+                <td th:text="${productsService.getProductById(purchase.getProductId()).getPrice()} + ' р.'">PRODUCT PRICE</td>
+                <td th:text="${productsService.getProductById(purchase.getProductId()).getPrice() * purchase.getProductCount()} + ' р.'">PRODUCT TOTAL PRICE</td>
+                <td>
+                    <div>
+                        <input class="count" type="button" value="-" th:onclick="'minus(\'count'+ ${index.count} + '\')'" >
+                        <input Name="productCounts[]" class="count" type="number" size="2" value="1" th:id="${'count'+index.count}" min="1" max="10" th:onchange="'fixCountEl(\'count'+ ${index.count} + '\')'" th:value="${purchase.getProductCount()}" required>
+                        <input class="count" type="button" value="+" th:onclick="'plus(\'count'+ ${index.count} + '\')'">
+                    </div>
+                </td>
+                <td>
+                    <input type="hidden" Name="purchaseId" th:value="${purchase.getId()}" >
+                    <button type="submit" name="delete" class="btn btn-danger">Удалить</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <h3>
+            Изменить количество
+            <button name="change" type="submit" class="btn btn-warning">Изменить</button>
+        </h3>
+        <h3>
+            Общая стоимость
+            <small class="text-muted" th:text="${totalPrice} + ' р.'">TOTAL PRICE</small>
+        </h3>
+    </form>
+    <hr th:if="${purchases.isEmpty() == false}">
+    <h3 th:if="${purchases.isEmpty() == false}">Оформить заказ</h3>
+    <form th:if="${purchases.isEmpty() == false}" class="row g-3" style="width: 500px;" th:method="POST" th:action="@{/sendPurchases}">
+        <div class="col-12">
+            <label for="inputAddress" class="form-label">Адрес</label>
+            <input name="address" type="text" class="form-control" id="inputAddress" placeholder="г. Москва, ул. Пушкина, д.3, кв.7" required>
+        </div>
+        <div class="col-md-12">
+            <label for="inputPhone" class="form-label">Номер телефона</label>
+            <input name="telephone" type="tel" class="form-control" id="inputPhone"  placeholder="+7(910)123-45-67" required>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Отправить заказ</button>
+        </div>
+    </form>
+</div>
+<script>
+    function fixCountEl(id){
+        var countEl = document.getElementById(id);
+        if (countEl.value <= 0){
+            countEl.value = 1;
+        }
+        if (countEl.value >= 11){
+            countEl.value = 10;
+        }
+    }
+    function plus(id){
+        var countEl = document.getElementById(id);
+        if (countEl.value < 10) {
+            countEl.value++;
+        }
+    }
+    function minus(id){
+        var countEl = document.getElementById(id);
+        if (countEl.value > 1) {
+            countEl.value--;
+        }
+    }
+</script>
+</body>
+</html>

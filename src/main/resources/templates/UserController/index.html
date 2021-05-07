@@ -30,17 +30,23 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Корзина</a>
+                    <a class="nav-link" href="/purchases">Корзина</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Зарегистрироваться</a>
+                <li class="nav-item" th:if="${userRole} == 'GUEST'">
+                    <a class="nav-link" href="/login">Войти</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'GUEST'">
+                    <a class="nav-link" href="/sign">Зарегистрироваться</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'ADMIN' or ${userRole} == 'USER'">
+                    <a class="nav-link" href="/logout">Выйти</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Другое
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
-                        <li><a class="dropdown-item" href="/admin">Админ панель</a></li>
+                        <li th:if="${userRole} == 'ADMIN'"><a class="dropdown-item" href="/admin">Админ панель</a></li>
                         <li><a class="dropdown-item" href="/about">О проекте</a></li>
                     </ul>
                 </li>

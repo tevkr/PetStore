@@ -30,18 +30,24 @@
           </ul>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Корзина</a>
+          <a class="nav-link" href="/purchases">Корзина</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Зарегистрироваться</a>
+        <li class="nav-item" th:if="${userRole} == 'GUEST'">
+          <a class="nav-link" href="/login">Войти</a>
+        </li>
+        <li class="nav-item" th:if="${userRole} == 'GUEST'">
+          <a class="nav-link" href="/sign">Зарегистрироваться</a>
+        </li>
+        <li class="nav-item" th:if="${userRole} == 'ADMIN' or ${userRole} == 'USER'">
+          <a class="nav-link" href="/logout">Выйти</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Другое
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
-            <li><a class="dropdown-item" href="/admin">Админ панель</a></li>
-            <li><a class="dropdown-item" aria-current="page" href="/about">О проекте</a></li>
+            <li th:if="${userRole} == 'ADMIN'"><a class="dropdown-item" href="/admin">Админ панель</a></li>
+            <li><a class="dropdown-item" href="/about">О проекте</a></li>
           </ul>
         </li>
       </ul>
@@ -74,7 +80,7 @@
   </ul>
   </p>
   <div class="card" style="width: 18rem;">
-    <img src="media/img/about/github-profile-pic.png" class="card-img-top" alt="github-profile-pic">
+    <img src="img/about/github-profile-pic.png" class="card-img-top" alt="github-profile-pic">
     <div class="card-body">
       <h5 class="card-title">Github репозиторий PetStore</h5>
       <p class="card-text">Java course work.</p>

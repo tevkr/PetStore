@@ -37,3 +37,20 @@ create table if not exists products
     FOREIGN KEY (product_type_id) REFERENCES product_types (id) ON DELETE CASCADE,
     FOREIGN KEY (product_type_detailed_id) REFERENCES product_types_detailed (id) ON DELETE CASCADE
 );
+
+create table if not exists users
+(
+    id serial primary key,
+    email text,
+    username text,
+    password text,
+    role text
+);
+
+create table if not exists shopping_cart
+(
+    id serial primary key,
+    user_id integer,
+    product_id integer,
+    product_count integer
+);

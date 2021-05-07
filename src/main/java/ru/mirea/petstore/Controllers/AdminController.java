@@ -1,18 +1,13 @@
 package ru.mirea.petstore.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.mirea.petstore.Models.Pet;
-import ru.mirea.petstore.Models.Product;
-import ru.mirea.petstore.Models.ProductType;
-import ru.mirea.petstore.Models.ProductTypeDetailed;
-import ru.mirea.petstore.Services.PetService;
-import ru.mirea.petstore.Services.ProductService;
-import ru.mirea.petstore.Services.ProductTypeDetailedService;
-import ru.mirea.petstore.Services.ProductTypeService;
+import ru.mirea.petstore.Models.*;
+import ru.mirea.petstore.Services.*;
 
 import java.util.Comparator;
 
@@ -23,17 +18,31 @@ public class AdminController {
     private final ProductService productService;
     private final ProductTypeService productTypeService;
     private final ProductTypeDetailedService productTypeDetailedService;
+    private final UserService userService;
 
     @Autowired
-    public AdminController(PetService petService, ProductService productService, ProductTypeService productTypeService, ProductTypeDetailedService productTypeDetailedService) {
+    public AdminController(PetService petService,
+                          ProductService productService,
+                          ProductTypeService productTypeService,
+                          ProductTypeDetailedService productTypeDetailedService,
+                          UserService userService) {
         this.petService = petService;
         this.productService = productService;
         this.productTypeService = productTypeService;
         this.productTypeDetailedService = productTypeDetailedService;
+        this.userService = userService;
+    }
+
+    private String getUserRole(Authentication authentication) {
+        if (authentication == null)
+            return "GUEST";
+        else
+            return ((User)userService.loadUserByUsername(authentication.getName())).getRole();
     }
 
     @GetMapping
-    public String index() {
+    public String index(Authentication authentication, Model model) {
+        model.addAttribute("userName", authentication.getName());
         return "AdminController/admin-index";
     }
 

@@ -65,3 +65,16 @@ html {
 .description {
 	margin-left: 15px;
 }
+
+.count {
+	border: 1px solid #eeeeee;
+	box-sizing: border-box;
+	margin: 0;
+	outline: none;
+	padding: 10px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+}

@@ -20,7 +20,7 @@
                     <a class="nav-link" aria-current="page" href="/">Главная</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Товары
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown1">
@@ -30,17 +30,23 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Корзина</a>
+                    <a class="nav-link" href="/purchases">Корзина</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Зарегистрироваться</a>
+                <li class="nav-item" th:if="${userRole} == 'GUEST'">
+                    <a class="nav-link" href="/login">Войти</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'GUEST'">
+                    <a class="nav-link" href="/sign">Зарегистрироваться</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'ADMIN' or ${userRole} == 'USER'">
+                    <a class="nav-link" href="/logout">Выйти</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Другое
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
-                        <li><a class="dropdown-item" href="/admin">Админ панель</a></li>
+                        <li th:if="${userRole} == 'ADMIN'"><a class="dropdown-item" href="/admin">Админ панель</a></li>
                         <li><a class="dropdown-item" href="/about">О проекте</a></li>
                     </ul>
                 </li>
@@ -56,7 +62,7 @@
     <h1 th:text="${product.getName()}">Название</h1><br>
     <div style="display: flex;">
         <div class="card" style="width: 18rem; flex: 30%; min-width: 300px; max-width: 300px;">
-            <img th:src="${'media/img/products/'+product.getId()+'.png'}" class="card-img-top" alt="product-img">
+            <img th:src="@{${'img/products/' + product.getId() + '.png'}}" class="card-img-top" alt="product-img">
             <div class="card-body">
                 <p class="card-text" th:text="${'Цена: ' + product.getPrice() + ' р.'}">TEXT</p>
                 <p class="card-text" th:text="${product.getWeight()}">TEXT</p>
@@ -67,6 +73,40 @@
             <p th:each="line: ${productDescription}" th:text="${line}">TEXT</p>
         </div>
     </div>
+    <form th:method="POST" th:action="@{/addPurchase}" style="display: flex; margin-top: 20px;">
+        <input type="hidden" th:name="id" th:value="${product.getId()}">
+        <div>
+            <input class="count" type="button" value="-" onclick="minus('count')">
+            <input name="count" class="count" type="number" size="2" value="1" id="count" min="1" max="10" onchange="fixCountEl('count')" required>
+            <input class="count" type="button" value="+" onclick="plus('count')">
+        </div>
+        <button type="submit" class="btn btn-primary mb-3" style="margin-left: 10px; height: 47px;">Добавить в корзину</button>
+    </form>
+    <p th:if="${Status} == 'count_overflow'">Количество одного товара в корзине не может превышать 10!</p>
+    <p th:if="${Status} == 'OK'">Товар был добавлен в корзину</p>
 </div>
+<script>
+    function fixCountEl(id){
+        var countEl = document.getElementById(id);
+        if (countEl.value <= 0){
+            countEl.value = 1;
+        }
+        if (countEl.value >= 11){
+            countEl.value = 10;
+        }
+    }
+    function plus(id){
+        var countEl = document.getElementById(id);
+        if (countEl.value < 10) {
+            countEl.value++;
+        }
+    }
+    function minus(id){
+        var countEl = document.getElementById(id);
+        if (countEl.value > 1) {
+            countEl.value--;
+        }
+    }
+</script>
 </body>
 </html>

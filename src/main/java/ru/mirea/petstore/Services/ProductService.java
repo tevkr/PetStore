@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.mirea.petstore.Models.Product;
 import ru.mirea.petstore.Models.ProductType;
@@ -49,11 +50,12 @@ public class ProductService {
     }
     @SneakyThrows
     public void saveImage(MultipartFile image, int lastId) {
-        String folder = "media/img/products/";
+        Path currentPath = Paths.get("src");
+        Path absolutePath = currentPath.toAbsolutePath();
+
+    //    String folder = "media/img/products/";
         byte[] bytes = image.getBytes();
-        String[] fileFormatArr = image.getOriginalFilename().split("\\.");
-        String fileFormat = fileFormatArr[fileFormatArr.length - 1];
-        Path path = Paths.get(folder + lastId + "." + fileFormat);
+        Path path = Paths.get(absolutePath + "/main/resources/static/img/products/" + lastId + ".png");
         Files.write(path, bytes);
     }
 }
