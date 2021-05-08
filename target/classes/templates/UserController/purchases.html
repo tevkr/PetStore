@@ -90,7 +90,7 @@
                     </div>
                 </td>
                 <td>
-                    <button type="submit" name="delete" class="btn btn-danger">Удалить</button>
+                    <button type="submit" name="delete" class="btn btn-danger" th:onclick="'changePurchaseId('+ ${purchase.getId()} + ')'">Удалить</button>
                 </td>
             </tr>
             </tbody>
