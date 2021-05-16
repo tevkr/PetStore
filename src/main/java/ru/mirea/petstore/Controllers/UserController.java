@@ -2,14 +2,10 @@ package ru.mirea.petstore.Controllers;
 
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.mirea.petstore.Models.*;
@@ -20,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/")
@@ -33,6 +28,7 @@ public class UserController {
     private final UserService userService;
     private final PurchaseService purchaseService;
     private final EmailService emailService;
+    private final CriteriaService criteriaService;
 
     @Autowired
     public UserController(PetService petService,
@@ -41,7 +37,8 @@ public class UserController {
                           ProductTypeDetailedService productTypeDetailedService,
                           UserService userService,
                           PurchaseService purchaseService,
-                          EmailService emailService) {
+                          EmailService emailService,
+                          CriteriaService criteriaService) {
         this.petService = petService;
         this.productService = productService;
         this.productTypeService = productTypeService;
@@ -49,6 +46,7 @@ public class UserController {
         this.userService = userService;
         this.purchaseService = purchaseService;
         this.emailService = emailService;
+        this.criteriaService = criteriaService;
     }
     private String getUserRole(Authentication authentication) {
         if (authentication == null)
@@ -287,6 +285,18 @@ public class UserController {
         } catch (ServletException e) { }
     }
 
+    @GetMapping("/search")
+    public String searchProducts(Authentication authentication,
+                                 @RequestParam(name = "name", required = false) String searchString,
+                                 Model model) {
+        model.addAttribute("userRole", getUserRole(authentication));
+        model.addAttribute("sortPetsById", Comparator.comparing(Pet::getId));
+        model.addAttribute("pets", petService.getAllPets());
+        model.addAttribute("products", criteriaService.getByProductName(searchString));
+        model.addAttribute("sortProductsById", Comparator.comparing(Product::getId));
+        model.addAttribute("searchName", searchString);
+        return "UserController/search";
+    }
     //@GetMapping("/login")
     //public String showLoginForm(Model model) {
     //    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

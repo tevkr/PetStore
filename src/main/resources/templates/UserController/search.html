@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Главная</title>
+    <title>Поиск по товарам</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/bootstrap.js"></script>
@@ -17,7 +17,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Главная</a>
+                    <a class="nav-link" aria-current="page" href="/">Главная</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -52,23 +52,29 @@
                 </li>
             </ul>
             <form class="d-flex" th:method="GET" th:action="@{/search}" >
-                <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск" name="name">
+                <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск" name="name" th:value="${searchName}">
                 <button class="btn btn-outline-success" type="submit">Поиск</button>
             </form>
         </div>
     </div>
 </nav>
-<div class="content padding-site">
-    <p class="h1">Зоомагазин PetStore</p>
-    <p>Спасибо за то, что выбрали наш интернет-магазин. Уверены, что вы не пожалеете о своем решении, ведь «PetStore» – это более <b>4 тысяч</b> наименований товаров для животных.<br>
-        Мы предлагаем продукцию проверенных производителей, как российских, так и зарубежных. Огромный ассортимент позволит каждому покупателю выбрать что-нибудь вкусное и полезное для своего любимца.<br>
-        <b>Каталог содержит:</b><br>
-        — корма (лечебные и ежедневные) для кошек, собак, рыб, птиц, грызунов;<br>
-        — лакомства и подкормки;<br>
-        — аксессуары (миски, поилки, одежда, поводки, клетки, игрушки, туалеты, наполнители, аквариумы).<br>
-        Мы удобно расположили товары в каталоге по разделам, чтобы вы легко могли найти нужную позицию. Каждый вид продукции имеет характеристики, с которыми можно ознакомиться перед покупкой. На сайте представлена исключительно актуальная информация, так как ассортимент продукции постоянно пополняется. Удобная навигация позволит в два клика купить необходимый товар.<br>
-        У нас работает профессиональная курьерская служба, доставляющая заказы точно в срок. Наши сотрудники всегда предупредительны и вежливы.
-    </p>
+<div style="text-align: center;">
+    <div class="content" style="display: inline-block;">
+        <div class="products container items-parent">
+            <h1 th:if="${searchName != ''}" style="flex: 100%;" th:text="'Поиск по \'' + ${searchName} + '\''">TEXT</h1>
+            <h1 th:if="${searchName == ''}" style="flex: 100%;">Все товары</h1>
+            <div class="item-ch col-xl-3 col-lg-4 item-md-6 item-sm-6 item-xs-12" th:each="product : ${#lists.sort(products, sortProductsById)}">
+                <div class="card" style="width: 18rem;">
+                    <img th:src="@{${'img/products/' + product.getId() + '.png'}}" class="card-img-top" alt="product-img">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${product.getName()}">Card title</h5>
+                        <p class="card-text" th:text="${product.getPrice() + ' р.'}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a th:href="${'/product?productId='+product.getId()}" class="btn btn-primary">Перейти</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
