@@ -1,18 +1,18 @@
 ﻿insert into product_types values (1, 1, 'Сухой корм');
 insert into product_types values (2, 1, 'Консервы');
-insert into product_types values (3, 1, 'Каши и молочные смеси');
+
 insert into product_types values (4, 1, 'Лакомства');
 insert into product_types values (5, 1, 'Содержание и уход');
 insert into product_types values (6, 1, 'Амуниция');
 insert into product_types values (7, 1, 'Миски');
 insert into product_types values (8, 1, 'Игрушки');
 insert into product_types values (9, 1, 'Одежда');
-insert into product_types values (10, 1, 'Обувь и носки');
+
 insert into product_types values (11, 1, 'Лежаки и домики');
-insert into product_types values (12, 1, 'Клетки и вольеры');
+
 insert into product_types values (13, 1, 'Транспортировка');
 insert into product_types values (14, 1, 'Ветпрепараты');
-insert into product_types values (15, 1, 'Аксессуары');
+
 insert into product_types values (16, 2, 'Сухой корм');
 insert into product_types values (17, 2, 'Консервы');
 insert into product_types values (18, 2, 'Наполнители');
@@ -25,18 +25,18 @@ insert into product_types values (24, 2, 'Лежаки и домики');
 insert into product_types values (25, 2, 'Транспортировка');
 insert into product_types values (26, 2, 'Ветпрепараты');
 insert into product_types values (27, 3, 'Корм для рыб');
-insert into product_types values (28, 3, 'Корм для рептилий');
+
 insert into product_types values (29, 3, 'Аквариумы и террариумы');
 insert into product_types values (30, 4, 'Повседневные корма');
 insert into product_types values (31, 4, 'Витамины и лакомства');
 insert into product_types values (32, 4, 'Содержание и уход');
-insert into product_types values (33, 4, 'Игрушки');
-insert into product_types values (34, 4, 'Ветпрепараты');
+
+
 insert into product_types values (35, 5, 'Корм');
-insert into product_types values (36, 5, 'Клетки');
-insert into product_types values (37, 5, 'Наполнители');
+
+
 insert into product_types values (38, 5, 'Аксессуары для клеток');
-insert into product_types values (39, 5, 'Поилки и кормушки');
-insert into product_types values (40, 5, 'Содержание и уход');
+
+
 insert into product_types values (41, 5, 'Витамины и лакомства');
 insert into product_types values (42, 5, 'Игрушки');
