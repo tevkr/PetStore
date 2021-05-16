@@ -294,6 +294,7 @@ public class UserController {
         model.addAttribute("pets", petService.getAllPets());
         model.addAttribute("products", criteriaService.getByProductName(searchString));
         model.addAttribute("sortProductsById", Comparator.comparing(Product::getId));
+        if (searchString == null) searchString = "null";
         model.addAttribute("searchName", searchString);
         return "UserController/search";
     }

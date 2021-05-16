@@ -61,8 +61,9 @@
 <div style="text-align: center;">
     <div class="content" style="display: inline-block;">
         <div class="products container items-parent">
-            <h1 th:if="${searchName != ''}" style="flex: 100%;" th:text="'Поиск по \'' + ${searchName} + '\''">TEXT</h1>
+            <h1 th:if="${searchName != '' and searchName != 'null'}" style="flex: 100%;" th:text="'Поиск по \'' + ${searchName} + '\''">TEXT</h1>
             <h1 th:if="${searchName == ''}" style="flex: 100%;">Все товары</h1>
+            <h1 th:if="${searchName == 'null'}" style="flex: 100%;">Ничего не найдено</h1>
             <div class="item-ch col-xl-3 col-lg-4 item-md-6 item-sm-6 item-xs-12" th:each="product : ${#lists.sort(products, sortProductsById)}">
                 <div class="card" style="width: 18rem;">
                     <img th:src="@{${'img/products/' + product.getId() + '.png'}}" class="card-img-top" alt="product-img">
