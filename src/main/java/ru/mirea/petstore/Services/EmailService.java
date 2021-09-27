@@ -17,9 +17,22 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Класс-сервис для отправки сообщений на электронную почту
+ * @author Яновский Владислав
+ */
 @Service
 public class EmailService {
 
+    /**
+     * Асинхронный метод отправки сообщения на почту
+     * @param mail Адрес эектронной почты
+     * @param message Сообщение
+     * @param isManager Переменная показывающая посылается ли письмо менеджеру или обычному пользователю
+     * @throws AddressException Исключение, возникающее при обнаружении неправильно отформатированного адреса
+     * @throws MessagingException Базовый класс для всех исключений, создаваемых классами обмена сообщениями
+     * @throws IOException Сигнализирует о том, что произошло какое-либо исключение ввода-вывода. Этот класс является общим классом исключений, создаваемых неудачными или прерванными операциями ввода-вывода.
+     */
     @Async
     public void sendmail(String mail, String message, boolean isManager) throws AddressException, MessagingException, IOException {
         Properties props = new Properties();

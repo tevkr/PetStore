@@ -1,0 +1,5 @@
+ru.mirea.petstore
+ru.mirea.petstore.Controllers
+ru.mirea.petstore.Models
+ru.mirea.petstore.Repositories
+ru.mirea.petstore.Services

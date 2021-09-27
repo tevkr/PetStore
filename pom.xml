@@ -87,6 +87,10 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <encoding>UTF-8</encoding>
+                    <doclet>com.tarsec.javadoc.pdfdoclet.PDFDoclet</doclet>
+                    <docletPath>path/to/pdfdoclet-1.0.2-all.jar</docletPath>
+                    <useStandardDocletOptions>false</useStandardDocletOptions>
                 </configuration>
             </plugin>
         </plugins>
